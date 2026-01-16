@@ -12,7 +12,7 @@
 ## Project Roadmap
 
 ### Phase 1: Infrastructure & Authentification (현재 진행 중)
-- [ ] Ubuntu/Docker 기반 개발 환경 구축 (PostgreSQL, MongoDB)
+- [x] Ubuntu/Docker 기반 개발 환경 구축 (PostgreSQL, MongoDB)
 - [ ] Spring Security + JWT를 이용한 인증 시스템 구현
 - [ ] 회원가입/로그인 및 소셜 로그인(OAuth2) 연동
 
