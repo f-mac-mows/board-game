@@ -31,6 +31,16 @@
 - [ ] Docker Compose를 넘어선 Kubernetes(Minikube) 오케스트레이션 적용
 - [ ] Prometheus & Grafana를 활용한 서버 모니터링 구축
 
+### 🗄️ Database Design
+- **PostgreSQL**: User, Assets, Ranking (Transactional data)
+  - `users`: 기본 계정 정보 및 OAuth 정보
+  - `user_assets`: 재화(Gold, Point) 정보
+  - `user_stats`: 게임 타입별 Level, EXP, MMR (게임별 독립적 숙련도 관리)
+- **MongoDB**: Game Move Logs, Activity Logs (Big data / Flexible schema)
+  - `game_records`: 게임 결과 요약 데이터
+  - `game_move_logs`: 복기용 상세 수순 데이터
+- **Redis**: Real-time Room info, Matchmaking Queue, Session management
+
 ## How to Run
 ```bash
 docker compose up -d
