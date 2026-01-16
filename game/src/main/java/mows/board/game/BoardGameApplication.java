@@ -3,7 +3,7 @@ package mows.board.game;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication()
 public class BoardGameApplication {
 
 	public static void main(String[] args) {

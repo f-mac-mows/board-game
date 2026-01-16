@@ -44,4 +44,7 @@
 ## How to Run
 ```bash
 docker compose up -d
-./game/gradlew bootRun
+./gradlew bootRun
+
+## DB 접속
+`docker exec -it board-game-db psql -U user -d game_db`
