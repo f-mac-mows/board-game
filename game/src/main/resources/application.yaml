@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: BoardGame
+
+  # PostgreSQL 설정
+  datasource:
+    url: jdbc:postgresql://localhost:5432/game_db
+    username: user
+    password: linux1234
+    driver-class-name: org.postgresql.Driver
+
+  # MongoDB 설정
+  data:
+    mongodb:
+      url: mongodb://admin:linux1234@localhost:27017/admin
+      database: game_logs
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
