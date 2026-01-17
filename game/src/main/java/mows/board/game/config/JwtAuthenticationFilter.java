@@ -13,12 +13,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import mows.board.game.service.LogoutService;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
+    private final LogoutService logoutService;
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -29,6 +30,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 2. 토큰 유효성 검사
         if (token != null && jwtTokenProvider.validateToken(token)) {
+            // 블랙리스트 확인
+            if (logoutService.isBlackListed(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String email = jwtTokenProvider.getEmail(token);
 
             // 3. 인증 정보 생성

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import mows.board.game.config.JwtTokenProvider;
+import mows.board.game.dto.UserProfileReponse;
 import mows.board.game.entity.User;
 import mows.board.game.entity.UserAsset;
 import mows.board.game.entity.UserStat;
@@ -68,5 +69,16 @@ public class UserService {
 
         // 3. 토큰 생성 및 반환
         return jwtTokenProvider.createToken(user.getEmail());
+    }
+
+    public UserProfileReponse getUserProfile(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다,"));
+
+        return new UserProfileReponse(
+            user.getEmail(),
+            user.getNickmname(),
+            user.getCreatedAt()
+        );
     }
 }

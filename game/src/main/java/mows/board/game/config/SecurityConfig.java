@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
+import mows.board.game.service.LogoutService;
 
 @Configuration
 @EnableWebSecurity
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
     
     private final JwtTokenProvider jwtTokenProvider;
+    private final LogoutService logoutService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,7 +34,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**", "/error").permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+            // JWT 필터 끼워넣기
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, logoutService),
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

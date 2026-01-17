@@ -9,11 +9,14 @@ spring:
     password: linux1234
     driver-class-name: org.postgresql.Driver
 
-  # MongoDB 설정
+  # MongoDB, Redis 설정
   data:
     mongodb:
       url: mongodb://admin:linux1234@localhost:27017/admin
       database: game_logs
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   jpa:
     hibernate:
