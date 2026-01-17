@@ -18,7 +18,7 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret:e1c41a9e59080940fe731a97315c8c558940d80654265c259b124a4d5cdcbc01}")
+    @Value("${jwt.secret}")
     private String secretKey;
 
     // 토큰 유효시간 (24 시간)
@@ -53,7 +53,7 @@ public class JwtTokenProvider {
     }
 
     // 3. 토큰 유효성 검사
-    public boolean vlaidateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
