@@ -6,18 +6,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
 import mows.board.game.dto.SignUpRequest;
 import mows.board.game.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
-
-    public AuthController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignUpRequest dto) {
