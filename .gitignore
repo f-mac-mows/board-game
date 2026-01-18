@@ -111,4 +111,6 @@ gradle-app.setting
 # Dir
 /data
 
+# dotenv
+.env
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,git,java,linux,redis

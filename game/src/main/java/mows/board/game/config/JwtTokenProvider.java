@@ -33,8 +33,8 @@ public class JwtTokenProvider {
     }
 
     // 1. 토큰 생성
-    public String createToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email);
+    public String createToken(String nickname) {
+        Claims claims = Jwts.claims().setSubject(nickname);
         Date now = new Date();
         Date validity = new Date(now.getTime() + tokenValidityInMilliseconds);
 
@@ -46,8 +46,8 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // 2. 토큰에서 이메일 추출
-    public String getEmail(String token) {
+    // 2. 토큰에서 닉네임 추출
+    public String getNickname(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }

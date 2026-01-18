@@ -36,11 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String email = jwtTokenProvider.getEmail(token);
+            String nickname = jwtTokenProvider.getNickname(token);
 
             // 3. 인증 정보 생성
             UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+                new UsernamePasswordAuthenticationToken(nickname, null, Collections.emptyList());
 
             // 4. 스프링 시큐리티 컨텍스트에 인증 정보 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);

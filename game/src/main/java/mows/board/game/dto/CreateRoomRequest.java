@@ -1,7 +1,5 @@
 package mows.board.game.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserProfileReponse{
-    String email;
-    String nickname;
-    LocalDateTime createdAt;
+public class CreateRoomRequest {
+    String title;
+    int maxPlayers;
 }
