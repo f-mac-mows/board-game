@@ -110,13 +110,8 @@ public class GameRoomService {
             throw new IllegalStateException("방장만 게임을 시작할 수 있습니다.");
         }
 
-        // 최소 인원 체크
-        if (room.getCurrentPlayers() < 2) {
-            throw new IllegalStateException("최소 2명 이상의 인원이 필요합니다.");
-        }
-
         // 상태 변경
-        room.setStarted(true);
+        room.start();
 
         // 모든 참가자에게 실시간 알림
         GameMessage startMessage = GameMessage.builder()

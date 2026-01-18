@@ -57,4 +57,11 @@ public class GameRoom {
             this.currentPlayers--;
         }
     }
+
+    public void start() {
+        if (this.currentPlayers < 2) {
+            throw new IllegalArgumentException("최소 2명 이상의 인원이 필요합니다.");
+        }
+        this.isStarted = true;
+    }
 }
