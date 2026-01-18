@@ -46,9 +46,17 @@ public class User {
     
     private String oauthId;
 
+    @Builder.Default
+    private boolean isProfileCompeted = false;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+        this.isProfileCompeted = true;
+    }
 }

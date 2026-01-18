@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import mows.board.game.dto.EmailRequest;
+import mows.board.game.dto.EmailVerifyRequest;
 import mows.board.game.dto.LoginRequest;
 import mows.board.game.dto.SignUpRequest;
+import mows.board.game.service.EmailService;
 import mows.board.game.service.LogoutService;
 import mows.board.game.service.UserService;
 
@@ -22,7 +25,26 @@ public class AuthController {
 
     private final UserService userService;
     private final LogoutService logoutService;
+    private final EmailService emailService;
 
+    // 인증 번호 발송
+    @PostMapping("/email-request")
+    public ResponseEntity<String> requestEmailAuth(@RequestBody EmailRequest request) {
+        emailService.sendVerificationEmail(request.getEmail());
+        return ResponseEntity.ok("인증 번호가 발송되었습니다.");
+    }
+
+    // 인증 번호 확인
+    @PostMapping("/email-verify")
+    public ResponseEntity<Boolean> verifyEmail(@RequestBody EmailVerifyRequest request) {
+        boolean isVerified = emailService.verifyCode(request.getEmail(), request.getCode());
+        if (isVerified) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
+    }
+    
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignUpRequest dto) {
         userService.register(dto.getEmail(), dto.getPassword(), dto.getNickname());
