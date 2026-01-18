@@ -34,7 +34,7 @@ public class GameRoomService {
 
     @Transactional
     public GameRoom createRoom(CreateRoomRequest dto, String nickname) {
-        validateUserNotInAnyRoom(nickname);
+        validateUserNotInAnyRoom(nickname); // 중복 체크
 
         GameRoom room = GameRoom.builder()
                         .title(dto.getTitle())
@@ -43,6 +43,7 @@ public class GameRoomService {
                         .build();
         GameRoom savedRoom = gameRoomRepository.save(room);
         
+        // Redis에 유저 상태 저장
         redisTemplate.opsForValue().set(USER_ROOM_KEY + nickname, savedRoom.getId(), 24, TimeUnit.HOURS);
 
         return savedRoom;
@@ -80,6 +81,7 @@ public class GameRoomService {
         GameRoom room = gameRoomRepository.findById(roomId).orElseThrow();
         room.leave();
 
+        // Redis에서 유저 상태 삭제
         redisTemplate.delete(USER_ROOM_KEY + nickname);
 
         // 퇴장 알림 + 인원 감소 반영
