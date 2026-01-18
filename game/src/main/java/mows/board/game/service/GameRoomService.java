@@ -1,7 +1,9 @@
 package mows.board.game.service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +19,33 @@ import mows.board.game.repository.GameRoomRepository;
 public class GameRoomService {
 
     private final GameRoomRepository gameRoomRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final SimpMessagingTemplate messagingTemplate;
+
+    // Redis 키 접두사
+    private static final String USER_ROOM_KEY = "user_at_room:";
+
+    // 참여 여부 확인
+    private void validateUserNotInAnyRoom(String nickname) {
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(USER_ROOM_KEY + nickname))) {
+            throw new IllegalStateException("이미 참여 중인 방이 있습니다.");
+        }
+    }
 
     @Transactional
     public GameRoom createRoom(CreateRoomRequest dto, String nickname) {
+        validateUserNotInAnyRoom(nickname);
+
         GameRoom room = GameRoom.builder()
                         .title(dto.getTitle())
                         .hostNickname(nickname)
                         .maxPlayers(dto.getMaxPlayers())
                         .build();
-        return gameRoomRepository.save(room);
+        GameRoom savedRoom = gameRoomRepository.save(room);
+        
+        redisTemplate.opsForValue().set(USER_ROOM_KEY + nickname, savedRoom.getId(), 24, TimeUnit.HOURS);
+
+        return savedRoom;
     }
 
     public List<GameRoom> getAllWaitingRooms() {
@@ -35,11 +54,15 @@ public class GameRoomService {
 
     @Transactional
     public void joinRoom(Long roomId, String nickname) {
+        validateUserNotInAnyRoom(nickname);
+
         GameRoom room = gameRoomRepository.findById(roomId)
                         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 방입니다."));
 
         room.join();
 
+        redisTemplate.opsForValue().set(USER_ROOM_KEY + nickname, roomId, 24, TimeUnit.HOURS);
+        
         // 알림 전송: /topic/room/{roomId}
         GameMessage enterMessage = GameMessage.builder()
                 .type(GameMessage.MessageType.ENTER)
@@ -57,6 +80,8 @@ public class GameRoomService {
         GameRoom room = gameRoomRepository.findById(roomId).orElseThrow();
         room.leave();
 
+        redisTemplate.delete(USER_ROOM_KEY + nickname);
+
         // 퇴장 알림 + 인원 감소 반영
         GameMessage leaveMessage = GameMessage.builder()
                 .type(GameMessage.MessageType.LEAVE)
@@ -67,8 +92,6 @@ public class GameRoomService {
                 .build();
 
         messagingTemplate.convertAndSend("/topic/room/" + roomId, leaveMessage);
-
-
     }
 
     public void sendChatMessage(GameMessage message) {
